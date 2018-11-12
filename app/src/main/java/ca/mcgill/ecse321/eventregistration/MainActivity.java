@@ -30,12 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private List<String> names;
     private ArrayAdapter<String> nameAdapter;
 
-    private HttpUtils httpUtils;
-
-    public void setHttpUtils(HttpUtils httpUtils){
-        this.httpUtils = httpUtils;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
-        httpUtils = new HttpUtils();
 
         names = new ArrayList<>();
         nameAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
@@ -100,52 +92,11 @@ public class MainActivity extends AppCompatActivity {
     public void addParticipant(View v) {
         error = "";
         final TextView tv = (TextView) findViewById(R.id.newparticipant_name);
-        httpUtils.post("participants/" + tv.getText().toString(), new RequestParams(), new JsonHttpResponseHandler() {
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                refreshErrorMessage();
-                tv.setText("");
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                try {
-                    error += errorResponse.get("message").toString();
-                } catch (JSONException e) {
-                    error += e.getMessage();
-                }
-                refreshErrorMessage();
-            }
-        });
+        names.add(tv.getText().toString());
+        tv.setText("");
     }
 
     public void refreshParticipantList(View view) {
-
-        httpUtils.get("participants", new RequestParams(), new JsonHttpResponseHandler() {
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                for( int i = 0; i < response.length(); i++) {
-                    try {
-                        String name = response.getJSONObject(i).getString("name");
-                        if (!names.contains(name)) {
-                            names.add(name);
-                        }
-                    } catch (Exception e) {
-                        error += e.getMessage();
-                    }
-                    refreshErrorMessage();
-                }
-                nameAdapter.notifyDataSetChanged();
-            }
-        });
-
-
+        nameAdapter.notifyDataSetChanged();
     }
 }
