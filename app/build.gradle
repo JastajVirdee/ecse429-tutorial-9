@@ -8,6 +8,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "ca.mcgill.ecse321.eventregistration.test.Instrumentation"
     }
     buildTypes {
         release {
@@ -18,6 +19,20 @@ android {
     useLibrary 'android.test.runner'
     useLibrary 'android.test.base'
     useLibrary 'android.test.mock'
+    sourceSets {
+        androidTest {
+            assets {
+                assets.srcDirs = ['src/androidTest/assets']
+            }
+            java {
+                java.srcDirs = ['src/androidTest/java']
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 }
 
 dependencies {
@@ -30,5 +45,14 @@ dependencies {
     implementation 'com.loopj.android:android-async-http:1.4.9'
 
     implementation 'com.jayway.android.robotium:robotium-solo:5.2.1'
-
+    //Runner
+    androidTestImplementation( 'com.android.support.test:runner:0.4.1' ){
+        exclude module: 'junit'
+    }
+    androidTestImplementation 'io.cucumber:cucumber-junit:3.0.2'
+    androidTestImplementation group: 'io.cucumber', name: 'cucumber-android', version: '3.0.2'
+    androidTestImplementation 'io.cucumber:cucumber-picocontainer:3.0.2'
+    androidTestImplementation group: 'io.cucumber', name: 'cucumber-jvm', version: '3.0.2', ext: 'pom'
+    androidTestImplementation 'io.cucumber:cucumber-core:3.0.2'
+    androidTestImplementation 'io.cucumber:cucumber-jvm-deps:1.0.6'
 }
